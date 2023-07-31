@@ -6,7 +6,7 @@
 
 import sys
 
-sys.path.insert( 1, 'C:\\Users\\User\\Documents\\training day\\sec_engineering\\crypto_lab\\the cryptopals crypto challenges\\set 1\\1' )
+sys.path.insert( 1, '#' )
 
 from hex_to_base64_cryptopal_version import clean_hex
 from frq_tables import freq_table, bigram_freq_table, dic_data_std_dev, eng_letters_fq_h_to_l
