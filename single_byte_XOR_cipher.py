@@ -3,10 +3,37 @@
 
 import sys
 
-sys.path.insert( 1, '#' )
+sys.path.insert( 1, '#' ) # frq_tables path
 
-from hex_to_base64_cryptopal_version import clean_hex
 from frq_tables import freq_table, bigram_freq_table, dic_data_std_dev, eng_letters_fq_h_to_l
+
+
+def clean_hex( hex_num ):
+
+    clean_hex_num = 0
+
+    _dict = {
+        'A':10,
+        'a':10,
+        'B':11,
+        'b':11,
+        'C':12,
+        'c':12,
+        'D':13,
+        'd':13,
+        'E':14,
+        'e':14,
+        'F':15,
+        'f':15
+        }
+
+    try:
+        clean_hex_num = _dict[ hex_num ]
+    except KeyError:
+        clean_hex_num = int( hex_num )
+
+    return clean_hex_num
+
 
 
 def freq_table_of( source ):
@@ -86,37 +113,7 @@ def bigrams_fq_table_of( source ):
         if bg_right not in bg_freq_table.keys():
             bg_freq_table[ bg_right ] = 1
         else:
-            bg_freq_table[ bg_right ] += 1
-
-            
-        """
-        if n > 1 and n < source_len - 3:
-            # middle
-
-            bg_left = source[ n-2 ] + source[ n-1 ] + hex_dig
-            bg_right = hex_dig + source[ n+2 ] + source[ n+3 ]
-
-            if bg_left not in bg_freq_table.keys():
-                bg_freq_table[ bg_left ] = 1
-            else:
-                bg_freq_table[ bg_left ] += 1
-
-            if bg_right not in bg_freq_table.keys():
-                bg_freq_table[ bg_right ] = 1
-            else:
-                bg_freq_table[ bg_right ] += 1
-                
-
-        if n == source_len - 1:
-            # end
-            
-            bg_left = source[ n-2 ] + source[ n-1 ] + hex_dig
-            if bg_left not in bg_freq_table.keys():
-                bg_freq_table[ bg_left ] = 1
-            else:
-                bg_freq_table[ bg_left ] += 1
-
-        """    
+            bg_freq_table[ bg_right ] += 1  
 
         n += 2
 
@@ -127,104 +124,6 @@ def bigrams_fq_table_of( source ):
         #print( "hex dig: {0} ------> fq.: {1}".format( k, freq_table[ k ] ) )
 
     return bg_freq_table
-
-
-def h_at( source ):
-
-    h_frq_limits = [ 4.00, 6.00 ]
-    th_frq_limits = [ 15, 17 ]
-    he_frq_limits = [ 14, 15 ]
-    t_frq_limits = [ 9.00, 11.00 ]
-    e_frq_limits = [ 12.00, 14.00 ]
-
-    src_len = len( source )
-
-    hex_digits_fq_table = freq_table_of( source )
-
-
-    possible_h_blocks = {}
-
-    for hex_dig in hex_digits_fq_table.keys():
-        
-        if hex_digits_fq_table[ hex_dig ] > h_frq_limits[0] and hex_digits_fq_table[ hex_dig ] < h_frq_limits[1]: # get digits, FROM SOURCE, with the freq close to h's freq
-
-            n = 0
-
-            while n < src_len/2:
-
-                # go thought source str looking for blocks of a[posible h] and [posible h]b; count em 
-
-                if n > 3: # we can get "a" from a[hex_dig]
-                        
-                    if source[n-2] + source[n-1] + hex_dig is not possible_h_blocks.keys():    
-                        possible_h_blocks[ source[n-2] + source[n-1] + hex_dig ] = 1
-                    else:
-                        possible_h_blocks[ source[n-2] + source[n-1] + hex_dig ] += 1
-
-                if n < (src_len/2)-2: # we can get "b" from [hex_dig]b
-
-                    if hex_dig + source[n+1] + source[n+2] is not possible_h_blocks.keys():    
-                        possible_h_blocks[ hex_dig + source[n+1] + source[n+2] ] = 1
-                    else:
-                        possible_h_blocks[ hex_dig + source[n+1] + source[n+2] ] += 1
-                        
-
-                n += 2
-
-    if len( possible_h_blocks ) == 0:
-        print("no possible h block found for {0}% < h freq. < {1}%".format(h_frq_limits[0], h_frq_limits[1]))
-        print("maybe you should broden the frq. interval limits")
-
-
-    p_h_blocks_len = len( possible_h_blocks )
-
-
-    for p_h_block in possible_h_blocks.keys(): # go through pair a[possible h] or [possible h]b
-
-        # float freq. %
-
-        float_frq_perc = round( ( float( possible_h_blocks[ p_h_block ] ) / float( p_h_blocks_len ) ) * float( 100 ), 2 )
-        
-        if th_frq_limits[0] < float_frq_perc and th_frq_limits[1] > float_frq_perc : 
-            # if here   ---> a[possible h] 
-
-            try:
-                # check if p_h_block[:2] = t
-            
-                if hex_digits_fq_table[ p_h_block[:2] ] < 11 and hex_digits_fq_table[ p_h_block[:2] ] > 9:
-                    
-                    #IF HERE ---> pair th
-                    print("beautiful, you've found the hidden th")
-                    
-                    # t ^ XOR = p_h_block[0]
-                    # h ^ XOR = p_h_block[1]
-
-                    continue
-
-            except KeyError:
-                print("no t, wrong guess pal")
-
-        else:
-            print("no possible th block found for {0}% < th freq. < {1}%".format( th_frq_limits[0], th_frq_limits[1] ))
-            
-
-        if he_frq_limits[0] < float_frq_perc and he_frq_limits[1] > float_frq_perc:
-            # if 15 >   this pair fq   > 11   ---> [possible h]b ---> pair he
-
-            try:
-
-                if hex_digits_fq_table[ p_h_block[2:] ] > 12:
-                        
-                    #IF HERE ---> pair he
-                    print("beautiful, you've found the hidden he")
-
-
-            except KeyError:
-                print("no e, wrong guess pal")
-
-        else:
-
-            print("no possible he block found for {0}% < he freq. < {1}%".format( he_frq_limits[0], he_frq_limits[1] ))
 
 
 def reallocate_elms_on_list( l, n_s ):
@@ -304,14 +203,6 @@ def most_fq_letters_at( encrypted_src ):
     for n in range(len(eng_letters_fq_h_to_l)):
 
         possible_key = get_xor_btw( hex_str_to_dec( hex_digits_fq_h_to_l[1] ), int.from_bytes( eng_letters_fq_h_to_l[n].encode(), "big" ) )
-
-        """
-        print("btw {0} and {1}, possible key: {2}".format( hex_str_to_dec( hex_digits_fq_h_to_l[1] ), int.from_bytes( eng_letters_fq_h_to_l[n].encode(), "big" ), possible_key) )
-        print("")
-        print("possible dcy msg: ---------------------------------> ", decrypt_src( encrypted_src, possible_key ) )
-        print("")
-        
-        """
         
 
 
@@ -347,22 +238,4 @@ def decrypt_src( source, key ):
 
     return decrypted_msg
 
-    
-
-
-
-decrypted_msg = most_fq_letters_at( "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736" )
-
-
-
-        
-
-
-
-
-
-
-
-
-
-        
+     
