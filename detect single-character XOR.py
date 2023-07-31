@@ -1,15 +1,14 @@
 import sys
 
-sys.path.insert( 1, '#' )
+sys.path.insert( 1, '#' ) # single_byte_XOR_cipher 
+sys.path.insert( 1, '#' ) # frq_tables paths
+
 
 from single_byte_XOR_cipher import freq_table_of, bigrams_fq_table_of, rearrange_dict_elms_h_to_l, get_xor_btw, hex_str_to_dec, decrypt_src
 from frq_tables import freq_table, bigram_freq_table, eng_letters_fq_h_to_l, dic_data_std_dev
 
 STD_DEV_DIFF_TOLERANCE = 1.15
 LOWEST_HEX_FQ_TOLERANCE = 13.00
-
-# my way of seeing an english formated text is by letter and bigram frq.
-
 
 # prob of c in hex being "a" in ascii
 
