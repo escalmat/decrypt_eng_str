@@ -1,8 +1,5 @@
 # decode a string which has been encode by XORing against a single character
 
-# the string is suppoced to be in english format
-# we need to know if the cippher is injective. if so, different hex digit represent different english letter
-# so, we work with english format features lika, the frequency of the characters
 
 import sys
 
