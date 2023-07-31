@@ -36,12 +36,6 @@ LOWEST_HEX_FQ_TOLERANCE = 13.00
 # get xor dec
 # decrypt the string
 
-# if 0: choose another candidate for a, say d or another candidate for c?
-# if we change c, the bigram we use to narrow down the error is always the same
-# if we change a, the bigram changes
-# what's better?
-# it's better to change the bigram, since we can't assure which bigram is in the string
-# then, we change the candidate for c
 
 def sub_dic_by_key( key, _dict ):
 
