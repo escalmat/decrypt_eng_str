@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert( 1, 'C:\\Users\\User\\Documents\\training day\\sec_engineering\\crypto_lab\\the cryptopals crypto challenges\\set 1\\3' )
+sys.path.insert( 1, '#' )
 
 from single_byte_XOR_cipher import freq_table_of, bigrams_fq_table_of, rearrange_dict_elms_h_to_l, get_xor_btw, hex_str_to_dec, decrypt_src
 from frq_tables import freq_table, bigram_freq_table, eng_letters_fq_h_to_l, dic_data_std_dev
@@ -209,7 +209,7 @@ src_strings = []
 pair = []
 
 try:
-    src_strings = open( "C:\\Users\\User\\Documents\\training day\\sec_engineering\\crypto_lab\\the cryptopals crypto challenges\\set 1\\4\\enc_file.txt").readlines()
+    src_strings = open( "enc_file.txt").readlines()
 except IOError:
     print("file not found ", IOError)
 
